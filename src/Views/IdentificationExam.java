@@ -14,12 +14,12 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class UploadExam extends javax.swing.JFrame {
+public class IdentificationExam extends javax.swing.JFrame {
 
     /**
      * Creates new form UploadExam
      */
-    public UploadExam() {
+    public IdentificationExam() {
         initComponents();
         ExamModel.Connect();
     }
@@ -49,14 +49,8 @@ public class UploadExam extends javax.swing.JFrame {
                     XSSFRow excelRow = excelSheet.getRow(row);                    
                     XSSFCell excelSubject = excelRow.getCell(0);
                     XSSFCell excelQuestion = excelRow.getCell(1);
-                    XSSFCell excelChoices1 = excelRow.getCell(2);
-                    XSSFCell excelChoices2 = excelRow.getCell(3);
-                    XSSFCell excelChoices3 = excelRow.getCell(4);
-                    XSSFCell excelChoices4 = excelRow.getCell(5);
-                    XSSFCell excelChoices5 = excelRow.getCell(6);
-                    XSSFCell excelCorrect = excelRow.getCell(7);
-                   model.addRow(new Object[]{excelSubject, excelQuestion, excelChoices1, excelChoices2,excelChoices3,
-                       excelChoices4,excelChoices5,excelCorrect});
+                    XSSFCell excelAnswer = excelRow.getCell(2);
+                   model.addRow(new Object[]{excelSubject, excelQuestion, excelAnswer});
                 }
                 JOptionPane.showMessageDialog(null, "Imported Successfully !!.....");
             } catch (IOException iOException) {
@@ -110,7 +104,7 @@ public class UploadExam extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        jLabel1.setText("Upload Exam");
+        jLabel1.setText("Upload Identification Exam");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -118,22 +112,15 @@ public class UploadExam extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Subject", "Question", "Choice 1", "Choice 2", "Choice 3", "Choice 4", "Choiced 5", "Correct Answers"
+                "Subject", "Question", "Correct Answers"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-            boolean[] canEdit = new boolean [] {
-                true, true, false, true, false, true, true, false
+                java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
             }
         });
         jScrollPane1.setViewportView(jTable1);
@@ -156,12 +143,6 @@ public class UploadExam extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(385, 385, 385))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(113, 113, 113)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -174,6 +155,12 @@ public class UploadExam extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(222, 222, 222)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -184,7 +171,7 @@ public class UploadExam extends javax.swing.JFrame {
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(58, 58, 58)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
@@ -213,14 +200,9 @@ public class UploadExam extends javax.swing.JFrame {
             for(int i = 0; i < bulkModel.getRowCount(); i++){                                      
                 String subject = bulkModel.getValueAt(i, 0).toString();
                 String question = bulkModel.getValueAt(i, 1).toString();
-                String c1 = bulkModel.getValueAt(i, 2).toString();
-                String c2 = bulkModel.getValueAt(i, 3).toString();
-                String c3 = bulkModel.getValueAt(i, 4).toString();
-                String c4 = bulkModel.getValueAt(i, 5).toString();   
-                String c5 = bulkModel.getValueAt(i, 6).toString();
-                String answer = bulkModel.getValueAt(i, 7).toString();
-                String bulkQuery="INSERT INTO `exam`( `subject`, `question`, `c1`, `c2`, `c3`, `c4`, `c5`, `answer`) VALUES  "
-                        + "('"+subject+"','"+question+"','"+c1+"','"+c2+"','"+c3+"','"+c4+"','"+c5+"','"+answer+"')";
+                String answer = bulkModel.getValueAt(i, 2).toString();
+                String bulkQuery="INSERT INTO `identification`( `subject`, `question`, `answer`) VALUES  "
+                        + "('"+subject+"','"+question+"','"+answer+"')";
                 bulkStmt.addBatch(bulkQuery);
             }
             int[] rowsInserted = bulkStmt.executeBatch();
@@ -257,20 +239,21 @@ public class UploadExam extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UploadExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IdentificationExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UploadExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IdentificationExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UploadExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IdentificationExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UploadExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(IdentificationExam.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UploadExam().setVisible(true);
+                new IdentificationExam().setVisible(true);
             }
         });
     }

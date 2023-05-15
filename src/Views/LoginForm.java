@@ -123,15 +123,24 @@ public class LoginForm extends javax.swing.JFrame {
         String txtusername = jTextField1.getText();
         String txtpassword = jPasswordField1.getText();
         try {
-            ExamModel.pst = ExamModel.conn.prepareStatement("select * from accounts where username = ? and password = ? ");
+            ExamModel.pst = ExamModel.conn.prepareStatement("select * from accounts where username = ? and password = ?");
             ExamModel.pst.setString(1, txtusername);
             ExamModel.pst.setString(2, txtpassword);
             ResultSet rs = ExamModel.pst.executeQuery();
 
             if (rs.next()) {
-                    this.setVisible(false);
-                    Homepage hpag = new Homepage();
-                    hpag.setVisible(true);
+                    ExamModel.pst = ExamModel.conn.prepareStatement("select * from accounts where username = ? and role = 'admin' ");
+                    ExamModel.pst.setString(1, txtusername);
+                    ResultSet rs1 = ExamModel.pst.executeQuery();
+                    if (rs1.next()) {
+                        this.setVisible(false);
+                        Homepage hpag = new Homepage();
+                        hpag.setVisible(true);
+                    } else {
+                        this.setVisible(false);
+                        StudentView hpag = new StudentView();
+                        hpag.setVisible(true);
+                    }
             } else if ("".equals(txtusername) || "".equals(txtpassword) ) {
                 JOptionPane.showMessageDialog(null,  "Username or Password is Required");
             } else {

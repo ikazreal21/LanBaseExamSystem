@@ -4,9 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Views/LoginForm.java</file>
-            <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Views/Homepage.java</file>
-            <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Model/ExamModel.java</file>
-            <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/lanbaseexamsystem/LanBaseExamSystem.java</file>
+            <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Views/ListofExam.java</file>
+            <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Views/StudentView.java</file>
+            <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Views/CreateExam.java</file>
             <file>file:/C:/Users/Admin/Documents/NetBeansProjects/LanBaseExamSystem/src/Views/UploadExam.java</file>
         </group>
     </open-files>
