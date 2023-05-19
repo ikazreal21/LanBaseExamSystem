@@ -1,5 +1,6 @@
 package Views;
 
+import Controller.GetExamParameters;
 import javax.swing.JOptionPane;
 import Model.ExamModel;
 import java.sql.*;
@@ -129,23 +130,25 @@ public class LoginForm extends javax.swing.JFrame {
             ResultSet rs = ExamModel.pst.executeQuery();
 
             if (rs.next()) {
-                    ExamModel.pst = ExamModel.conn.prepareStatement("select * from accounts where username = ? and role = 'admin' ");
+                    ExamModel.pst = ExamModel.conn.prepareStatement("select * from accounts where username = ? and role = 'student' ");
                     ExamModel.pst.setString(1, txtusername);
                     ResultSet rs1 = ExamModel.pst.executeQuery();
                     if (rs1.next()) {
-                        this.setVisible(false);
-                        Homepage hpag = new Homepage();
-                        hpag.setVisible(true);
-                    } else {
+                        String student = rs1.getString("username");
+                        GetExamParameters.SetStudentName(student);
                         this.setVisible(false);
                         StudentView hpag = new StudentView();
+                        hpag.setVisible(true);
+                        
+                    } else {
+                        this.setVisible(false);
+                        Homepage hpag = new Homepage();
                         hpag.setVisible(true);
                     }
             } else if ("".equals(txtusername) || "".equals(txtpassword) ) {
                 JOptionPane.showMessageDialog(null,  "Username or Password is Required");
             } else {
                     JOptionPane.showMessageDialog(null,  "Username or Password is Wrong..");
-                    jTextField1.setText("");
                     jPasswordField1.setText("");
             }
         } 
@@ -153,7 +156,7 @@ public class LoginForm extends javax.swing.JFrame {
             Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
 //            DbConnect.lblTestConnection.setText("Error On Connection");
             JOptionPane.showMessageDialog(null,  "Username or Password is Required");
-    }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed

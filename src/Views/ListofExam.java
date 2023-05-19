@@ -5,7 +5,10 @@
 package Views;
 
 import Model.ExamModel;
+import Views.ExamViewIdentification;
+import Controller.*;
 import java.sql.*;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Vector;
@@ -49,6 +52,8 @@ public class ListofExam extends javax.swing.JFrame {
                     v2.add(rs.getString("semester"));
                     numofitems = rs.getInt("multiplechoice") + rs.getInt("indentification");
                     v2.add(numofitems);
+                    v2.add(rs.getInt("multiplechoice"));
+                    v2.add(rs.getInt("indentification"));
                     v2.add(rs.getString("prof_name"));
                 }
                 
@@ -63,10 +68,74 @@ public class ListofExam extends javax.swing.JFrame {
     
     public void TakeExam(){
         ExamModel.dtm = (DefaultTableModel)jTable1.getModel();
-        int select = jTable1.getSelectedRow();
-        String chno = ExamModel.dtm.getValueAt(select, 0).toString();
+        int select = jTable1.getSelectedRow();    
+        int limitmulti = Integer.parseInt( ExamModel.dtm.getValueAt(select, 4).toString());
+        int limitindenty = Integer.parseInt(ExamModel.dtm.getValueAt(select, 5).toString());   
+        String Subject = ExamModel.dtm.getValueAt(select, 0).toString();
+        System.out.println(limitindenty);
+        System.out.println(limitmulti);
+        System.out.println(Subject);
         
-        JOptionPane.showMessageDialog(null,  "Selected " + chno);
+        
+        if(Optional.ofNullable(limitindenty).orElse(0) != 0) {
+            GetExamParameters.setIdentLimit(limitindenty, Subject);
+        }
+        
+        try {
+            ExamModel.pst = ExamModel.conn.prepareStatement("SELECT * FROM exam WHERE subject=?");
+            ExamModel.pst.setString(1, Subject);
+            ResultSet rs1 = ExamModel.pst.executeQuery();
+            
+            if (rs1.next()) {
+               StudentTakeExam();
+            } else {
+                JOptionPane.showMessageDialog(null,  "No Questions Available");
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(ListofExam.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null,  "You Already Take This Exam");
+        }
+    }
+    
+    
+    public void StudentTakeExam(){
+        ExamModel.dtm = (DefaultTableModel)jTable1.getModel();
+        int select = jTable1.getSelectedRow();
+        String Subject = ExamModel.dtm.getValueAt(select, 0).toString();
+        String gradeper = ExamModel.dtm.getValueAt(select, 1).toString();
+        int limitmulti = Integer.parseInt( ExamModel.dtm.getValueAt(select, 4).toString());
+        int limitindenty = Integer.parseInt(ExamModel.dtm.getValueAt(select, 5).toString());   
+        System.out.println(limitindenty);
+        System.out.println(limitmulti);
+        System.out.println(Subject);
+        String Student = GetExamParameters.GetStudent();
+        
+         try {
+            ExamModel.pst = ExamModel.conn.prepareStatement("insert into exam_take(student_name, subject, grading_per) values(?,?,?)");
+            ExamModel.pst.setString(1, Subject);
+            ExamModel.pst.setString(2, gradeper);
+            ExamModel.pst.setString(3, Student);
+            ExamModel.pst.executeUpdate();
+            
+            if (Optional.ofNullable(limitmulti).orElse(0) != 0) {
+                GetExamParameters.setMultiLimit(limitmulti, Subject);
+                this.setVisible(false);
+                ExamViewMultipleChoice hpag = new ExamViewMultipleChoice();
+                hpag.setVisible(true);
+            } else if (Optional.ofNullable(limitindenty).orElse(0) != 0) {
+                GetExamParameters.setIdentLimit(limitindenty, Subject);
+                this.setVisible(false);
+                ExamViewIdentification hpag = new ExamViewIdentification();
+                hpag.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(null, "Exam Not Ready Yet");
+            }
+           
+        } catch (SQLException ex) {
+            Logger.getLogger(ListofExam.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null,  "You Already Take This Exam");
+        }
     }
   
     
@@ -113,14 +182,14 @@ public class ListofExam extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Subject", "Grading Period", "Semester", "Items", "Professors Name"
+                "Subject", "Grading Period", "Semester", "Items", "Multiple Choice", "Identification", "Professors Name"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, true, true, false
             };
 
             public Class getColumnClass(int columnIndex) {
