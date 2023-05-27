@@ -14,10 +14,14 @@ public class GetExamParameters {
     
     private static String Student_name;
     private static String Subject;
+    private static String GradePer;
+    
+    private static int Score;
    
-    public static void setMultiLimit(int limit, String subject){
+    public static void setMultiLimit(int limit, String subject, String gradeper){
         multilimits = limit;
         Subject = subject;
+        GradePer = gradeper;
         System.out.println(multilimits);
         System.out.println(Subject);
     }
@@ -31,10 +35,15 @@ public class GetExamParameters {
         System.out.println(Subject);
         return Subject;
     }
-
-    public static void setIdentLimit(int limit, String subject){
+    
+    public static String GetGrading(){
+        return GradePer;
+    }
+    
+    public static void setIdentLimit(int limit, String subject, String gradeper){
         idenlimits = limit;
         Subject = subject;
+        GradePer = gradeper;
         System.out.println(idenlimits);
     }
     
@@ -49,5 +58,18 @@ public class GetExamParameters {
     
     public static String GetStudent(){
         return Student_name;
+    }
+    
+    public static void AddScore() {
+        Score = Score + 1;
+        System.out.println("Score:" + Score);
+    }
+    
+    public static int GetScore() {
+        return Score;
+    }
+    
+    public static void ResetScore() {
+        Score = 0;
     }
 }

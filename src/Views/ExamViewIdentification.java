@@ -29,11 +29,12 @@ public class ExamViewIdentification extends javax.swing.JFrame {
        
     ResultSet rs;
     String correctAns = "";
+    String IniAns = "";
     public void getIdentiQuestions() {
         int limit = GetExamParameters.GetIdenLimit();        
         String subject = GetExamParameters.GetSubject();
      try {
-        ExamModel.pst = ExamModel.conn.prepareStatement("SELECT * FROM exam WHERE subject=? ORDER BY RAND() LIMIT ?");
+        ExamModel.pst = ExamModel.conn.prepareStatement("SELECT * FROM identification WHERE subject=? ORDER BY RAND() LIMIT ?");
         ExamModel.pst.setString(1, subject);
         ExamModel.pst.setInt(2, limit);       
         rs = ExamModel.pst.executeQuery();
@@ -90,36 +91,39 @@ public class ExamViewIdentification extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("jLabel2");
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(480, 480, 480)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 457, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
-                .addGap(14, 14, 14))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 381, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(448, 448, 448))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(368, 368, 368))))
+                        .addGap(361, 361, 361))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(14, 14, 14))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(477, 477, 477))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,11 +132,11 @@ public class ExamViewIdentification extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(82, 82, 82)
+                .addGap(63, 63, 63)
                 .addComponent(jLabel2)
-                .addGap(68, 68, 68)
+                .addGap(86, 86, 86)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 233, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17))
         );
@@ -142,18 +146,26 @@ public class ExamViewIdentification extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (!"".equals(correctAns)) {
+            IniAns = jTextField1.getText();
+            System.out.println(IniAns);
+            if (correctAns.equalsIgnoreCase(IniAns)) {
+                GetExamParameters.AddScore();
+            }
+        }
+        
         try { 
             if (rs.next()){
                 jLabel1.setText(rs.getString("subject"));            
                 jLabel2.setText(rs.getString("question"));
                 correctAns = rs.getString("answer");
             } else {
+                jTextField1.setText(IniAns);
+                jTextField1.setEnabled(false);
                 jButton2.setEnabled(true);
                 jButton1.setEnabled(false);
             }
-//            if(jTextField1.getText().length() == 0){
-//                jButton1ActionPerformed(evt);
-//            }
+            
             if (true){
                 jTextField1.setText("");
             }
@@ -164,10 +176,35 @@ public class ExamViewIdentification extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            int Score = GetExamParameters.GetScore();
+            
+            String Student = GetExamParameters.GetStudent();
+            String Subject = GetExamParameters.GetSubject();
+            String Gradeper = GetExamParameters.GetGrading();
+            ExamModel.pst = ExamModel.conn.prepareStatement("update exam_take set score = ? where student_name = ? and subject = ? and grading_per = ?");
+            ExamModel.pst.setInt(1, Score);
+            ExamModel.pst.setString(2, Student);
+            ExamModel.pst.setString(3, Subject);   
+            ExamModel.pst.setString(4, Gradeper);
+            ExamModel.pst.executeUpdate();
+            
+            GetExamParameters.ResetScore();
+            
+    } 
+    catch (SQLException ex) {
+        Logger.getLogger(ListofExam.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+        
+        
         this.setVisible(false);
         StudentView hpag = new StudentView();
         hpag.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments

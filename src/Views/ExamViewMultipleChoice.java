@@ -29,7 +29,7 @@ public class ExamViewMultipleChoice extends javax.swing.JFrame {
     
     ResultSet rs;
     String correctAns = "";
-    
+    String IniAns = "";
     public void getExamMultipleCQuestions() {
         int limit = GetExamParameters.GetMultiLimit();        
         String subject = GetExamParameters.GetSubject();
@@ -54,6 +54,7 @@ public class ExamViewMultipleChoice extends javax.swing.JFrame {
             r4.setText(rs.getString("c4"));
             correctAns = rs.getString("answer");
 //            r5.setText(rs.getString("c5"));
+            System.out.println("Outside:" + correctAns);
             break;
         }
     } 
@@ -98,10 +99,20 @@ public class ExamViewMultipleChoice extends javax.swing.JFrame {
 
         jButton2.setText("Submit");
         jButton2.setEnabled(false);
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(r1);
         r1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         r1.setText("jRadioButton1");
+        r1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                r1ActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(r2);
         r2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
@@ -174,6 +185,24 @@ public class ExamViewMultipleChoice extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (!"".equals(correctAns)) {
+            if (r1.isSelected()) {
+                IniAns = "A";
+            } else if (r2.isSelected()) {
+                IniAns = "B";
+            } else if (r3.isSelected()) {
+                IniAns = "C";
+            } else if (r4.isSelected()) {
+                IniAns = "D";
+            }
+            System.out.println("After True:" + correctAns);
+            System.out.println(IniAns);
+            if (correctAns.equals(IniAns)) {
+                System.out.println(IniAns);
+                GetExamParameters.AddScore();
+            }
+        }
+        
         try {
             if (rs.next()){
                 jLabel1.setText(rs.getString("subject"));            
@@ -183,6 +212,7 @@ public class ExamViewMultipleChoice extends javax.swing.JFrame {
                 r3.setText(rs.getString("c3"));
                 r4.setText(rs.getString("c4"));
                 correctAns = rs.getString("answer");
+                System.out.println("Inside:" + correctAns);
             } else {
                 this.setVisible(false);
                 ExamViewIdentification hpag = new ExamViewIdentification();
@@ -196,6 +226,36 @@ public class ExamViewMultipleChoice extends javax.swing.JFrame {
             Logger.getLogger(ListofExam.class.getName()).log(Level.SEVERE, null, ex);
         }  
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            int Score = GetExamParameters.GetScore();
+            String Student = GetExamParameters.GetStudent();
+            String Subject = GetExamParameters.GetSubject();
+            String Gradeper = GetExamParameters.GetGrading();
+            ExamModel.pst = ExamModel.conn.prepareStatement("update exam_take set score = ? where student_name = ? and subject = ? and grading_per = ?");
+            ExamModel.pst.setInt(1, Score);
+            ExamModel.pst.setString(2, Student);
+            ExamModel.pst.setString(3, Subject);   
+            ExamModel.pst.setString(4, Gradeper);
+            ExamModel.pst.executeUpdate();
+            
+            GetExamParameters.ResetScore();
+            
+    } 
+    catch (SQLException ex) {
+        Logger.getLogger(ListofExam.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+        
+        
+        this.setVisible(false);
+        StudentView hpag = new StudentView();
+        hpag.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void r1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_r1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_r1ActionPerformed
 
     /**
      * @param args the command line arguments

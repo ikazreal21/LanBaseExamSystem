@@ -34,7 +34,7 @@ public class ListofExam extends javax.swing.JFrame {
         int numofitems;
         
         try {
-            ExamModel.pst = ExamModel.conn.prepareStatement("Select * from examcreated");
+            ExamModel.pst = ExamModel.conn.prepareStatement("Select * from examcreated ORDER BY exam_id DESC");
             ResultSet rs = ExamModel.pst.executeQuery();
             
             ResultSetMetaData rsd = rs.getMetaData();
@@ -68,7 +68,8 @@ public class ListofExam extends javax.swing.JFrame {
     
     public void TakeExam(){
         ExamModel.dtm = (DefaultTableModel)jTable1.getModel();
-        int select = jTable1.getSelectedRow();    
+        int select = jTable1.getSelectedRow();
+        String gradeper = ExamModel.dtm.getValueAt(select, 1).toString();
         int limitmulti = Integer.parseInt( ExamModel.dtm.getValueAt(select, 4).toString());
         int limitindenty = Integer.parseInt(ExamModel.dtm.getValueAt(select, 5).toString());   
         String Subject = ExamModel.dtm.getValueAt(select, 0).toString();
@@ -78,7 +79,7 @@ public class ListofExam extends javax.swing.JFrame {
         
         
         if(Optional.ofNullable(limitindenty).orElse(0) != 0) {
-            GetExamParameters.setIdentLimit(limitindenty, Subject);
+            GetExamParameters.setIdentLimit(limitindenty, Subject, gradeper);
         }
         
         try {
@@ -113,18 +114,18 @@ public class ListofExam extends javax.swing.JFrame {
         
          try {
             ExamModel.pst = ExamModel.conn.prepareStatement("insert into exam_take(student_name, subject, grading_per) values(?,?,?)");
-            ExamModel.pst.setString(1, Subject);
-            ExamModel.pst.setString(2, gradeper);
-            ExamModel.pst.setString(3, Student);
+            ExamModel.pst.setString(1, Student);
+            ExamModel.pst.setString(2, Subject);
+            ExamModel.pst.setString(3, gradeper);
             ExamModel.pst.executeUpdate();
             
             if (Optional.ofNullable(limitmulti).orElse(0) != 0) {
-                GetExamParameters.setMultiLimit(limitmulti, Subject);
+                GetExamParameters.setMultiLimit(limitmulti, Subject, gradeper);
                 this.setVisible(false);
                 ExamViewMultipleChoice hpag = new ExamViewMultipleChoice();
                 hpag.setVisible(true);
             } else if (Optional.ofNullable(limitindenty).orElse(0) != 0) {
-                GetExamParameters.setIdentLimit(limitindenty, Subject);
+                GetExamParameters.setIdentLimit(limitindenty, Subject, gradeper);
                 this.setVisible(false);
                 ExamViewIdentification hpag = new ExamViewIdentification();
                 hpag.setVisible(true);
